@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stegakan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <button id="darkModeToggle">🌙 Dark Mode</button>
+  <div class="container">
+    <div class="header">
+      <div class="logo-web">
+        <img src="Logo1.png" alt="Logo Stegakan" width="50" height="50"> 
+        <h1 class="judul">StegakanApp</h1>
+      </div>
+      
+      <p>Sembunyikan dan ekstrak pesan rahasia dalam gambar menggunakan transformasi steganografi DCT</p>
+    </div>
+
+    <div class="content">
+      <div class="left-column">
+        <div class="panel">
+          <div class="panel-title">
+            <i class="fas fa-image"></i> Pemilihan Gambar
+          </div>
+          <div class="form-group">
+            <label for="imageInput">Pilih Gambar Cover</label>
+            <input type="file" id="imageInput" accept="image/*">
+            <div class="file-info" id="fileInfo">
+              <i class="fas fa-info-circle"></i> Belum ada file dipilih
+            </div>
+            <div class="progress-bar">
+              <div class="progress" id="uploadProgress"></div>
+            </div>
+          </div>
+
+          <div class="image-preview" id="imagePreview">
+            <canvas id="canvas"></canvas>
+            <span id="previewPlaceholder">Pratinjau akan muncul di sini</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <i class="fas fa-key"></i> Opsi Keamanan
+          </div>
+          <div class="form-group">
+            <label for="passwordInput">Password Enkripsi (Opsional)</label>
+            <input type="password" id="passwordInput" placeholder="Masukkan password untuk keamanan tambahan">
+            <div class="status-indicator" id="encryptionStatus">
+              <i class="fas fa-lock-open"></i> Enkripsi: Tidak aktif
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="panel">
+          <div class="tabs">
+            <div class="tab active" data-tab="embed">Sisipkan Pesan</div>
+            <div class="tab" data-tab="extract">Ekstrak Pesan</div>
+          </div>
+
+          <div class="tab-content active" id="embed-tab">
+            <div class="form-group">
+              <label for="messageInput">Pesan Rahasia</label>
+              <textarea id="messageInput" placeholder="Ketik pesan rahasia Anda di sini..."></textarea>
+              <div class="status-indicator" id="messageStatus">
+                <i class="fas fa-ruler-horizontal"></i> Panjang: 0 karakter
+              </div>
+            </div>
+
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-triangle"></i>
+              <div>
+                <strong>Penting:</strong> Untuk hasil terbaik, gunakan gambar JPEG berkualitas tinggi. 
+                Panjang pesan maksimum tergantung pada dimensi gambar.
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-success" onclick="embedMessage()">
+                <i class="fas fa-code"></i> Sisipkan Pesan
+              </button>
+              <button class="btn" id="downloadBtn" onclick="downloadImage()" disabled>
+                <i class="fas fa-download"></i> Unduh Gambar
+              </button>
+            </div>
+          </div>
+
+          <div class="tab-content" id="extract-tab">
+            <div class="alert alert-success">
+              <i class="fas fa-lightbulb"></i>
+              <div>
+                <strong>Tip:</strong> Unggah gambar yang berisi pesan tersembunyi dan klik "Ekstrak Pesan" 
+                untuk mengungkap konten rahasia. Ingat password Anda jika menggunakan.
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="extractMessage()">
+                <i class="fas fa-search"></i> Ekstrak Pesan
+              </button>
+            </div>
+
+            <div class="output-container" id="output">
+              <div class="output-title">
+                <i class="fas fa-envelope-open-text"></i> Pesan yang Diekstrak
+              </div>
+              <p id="outputText">Belum ada pesan yang diekstrak</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel instructions">
+          <h3><i class="fas fa-book"></i> Panduan Penggunaan</h3>
+          
+          <h4>Cara Menyisipkan Pesan:</h4>
+          <ol>
+            <li>Pilih gambar cover dengan mengklik "Pilih Gambar Cover"</li>
+            <li>Masukkan pesan rahasia Anda di kolom teks</li>
+            <li>Opsional: Tambahkan password untuk enkripsi</li>
+            <li>Klik "Sisipkan Pesan" untuk menyembunyikan pesan dalam gambar</li>
+            <li>Unduh gambar hasil dengan klik "Unduh Gambar"</li>
+          </ol>
+          
+          <h4>Cara Mengekstrak Pesan:</h4>
+          <ol>
+            <li>Pilih gambar yang berisi pesan tersembunyi</li>
+            <li>Jika menggunakan password, masukkan password yang sama</li>
+            <li>Klik "Ekstrak Pesan" untuk melihat pesan rahasia</li>
+          </ol>
+          
+          <h4>Cara Memverifikasi Penyisipan Pesan:</h4>
+          <ul>
+            <li><strong>Setelah menyisipkan</strong>, Anda akan melihat notifikasi "Pesan berhasil disisipkan!"</li>
+            <li><strong>Ekstrak langsung</strong> tanpa mengganti gambar untuk memastikan pesan bisa dibaca</li>
+            <li><strong>Bandingkan pesan asli</strong> dengan hasil ekstraksi untuk validasi</li>
+            <li><strong>Gunakan password</strong> yang sama saat ekstraksi - password salah akan menghasilkan pesan rusak</li>
+            <li><strong>Periksa ukuran file</strong> - gambar dengan pesan biasanya sedikit lebih besar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>StegakanApp &copy; 2025 | Penyembunyian pesan aman menggunakan Discrete Cosine Transform</p>
+    </footer>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('darkModeToggle');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      toggleBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    });
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
